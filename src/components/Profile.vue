@@ -1,12 +1,40 @@
 <script setup>
 import Container from "@/components/Container.vue";
+import UserBar from "@/components/UserBar.vue";
+import ImageGallery from "@/components/imageGallery.vue";
 </script>
 
 <template>
   <Container>
     <div class="profile-container">
-      <h1>UserBar</h1>
-      <h1>ImageGalery</h1>
+      <UserBar
+        username="soueu_marlon"
+        :userInfo="{
+          posts: 4,
+          followers: 4320,
+          following: 100,
+        }"
+      />
+      <ImageGallery
+        :posts="[
+          {
+            id: 1,
+            image: 'https://picsum.photos/200/300',
+          },
+          {
+            id: 2,
+            image: 'https://picsum.photos/200/300',
+          },
+          {
+            id: 3,
+            image: 'https://picsum.photos/200/300',
+          },
+          {
+            id: 4,
+            image: 'https://picsum.photos/200/300',
+          },
+        ]"
+      />
     </div>
   </Container>
 </template>
@@ -16,7 +44,6 @@ import Container from "@/components/Container.vue";
   background: #fff;
 }
 .profile-container {
-  align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
