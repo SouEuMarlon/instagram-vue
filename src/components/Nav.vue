@@ -15,7 +15,7 @@ import { RouterLink } from 'vue-router';
     <Container>
       <div class="nav-container">
         <div class="right-content">
-          <RouterLink to="/">Instagram</RouterLink>
+          <RouterLink to="/" class="logo">Instagram</RouterLink>
           <AInputSearch
             v-model:value="searchUsername"
             placeholder="Username..."
@@ -36,7 +36,14 @@ import { RouterLink } from 'vue-router';
   </ALayoutHeader>
 </template>
 
-<style scoped> 
+<style scoped>
+.logo {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1;
+  text-decoration: none
+}
 .nav-container {  
   align-items: center;
   display: flex;
@@ -52,7 +59,7 @@ import { RouterLink } from 'vue-router';
 }
 
 .right-content{
-  gap: 10px;
+  gap: 20px;
 }
 
 .left-content{
