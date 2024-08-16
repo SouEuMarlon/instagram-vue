@@ -22,7 +22,6 @@ const showModal = () => {
 };
 
 const handleOk = (e) => {
-  console.log("ok!!!")
   userStore.handleSignup(userCredentials)
 };
 

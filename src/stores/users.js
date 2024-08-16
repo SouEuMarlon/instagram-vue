@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { supabase } from '../supabase'
 
 export const useUserStore = defineStore('users', () => {
   const user = ref(null)
@@ -15,7 +16,7 @@ export const useUserStore = defineStore('users', () => {
 
   const handleLogin = () =>{}
 
-  const handleSignup = (credentials) =>{
+  const handleSignup = async (credentials) =>{
     const {email, password, username} = credentials
 
     if(password.length < 6){
@@ -30,7 +31,32 @@ export const useUserStore = defineStore('users', () => {
       return errorMessage.value = "Email is invalid"
     }
 
+    // Verifica se o usuário já existe no banco de dados
+
+    const {data: userWithUsername} = await supabase.from("users")
+      .select()
+      .eq('username', username)
+      .single()
+    
+    if(userWithUsername){
+      return errorMessage.value = "Username already registered"
+    }
+
     errorMessage.value = ""
+
+    const {error} = await supabase.auth.signUp({
+      email,
+      password
+    })
+
+    if(error){
+      return errorMessage.value = error.message
+    }
+
+    await supabase.from("users").insert({
+      username,
+      email
+    })
   }
 
   const handleLogout = () =>{}
