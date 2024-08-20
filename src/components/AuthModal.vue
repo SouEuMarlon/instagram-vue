@@ -5,7 +5,7 @@ import { useUserStore } from "../stores/users";
 
 const userStore = useUserStore()
 
-const { errorMessage, loading } = storeToRefs(userStore); // Aqui usamos o storeToRefs para trazer mudança de estado para a mensagem de erro
+const { errorMessage, loading, user } = storeToRefs(userStore); // Aqui usamos o storeToRefs para trazer mudança de estado para a mensagem de erro
 
 const props = defineProps(['isLogin']);
 const open = ref(false);
@@ -21,12 +21,31 @@ const showModal = () => {
   open.value = true;
 };
 
-const handleOk = () => {
-  userStore.handleSignup(userCredentials)
+const clearUserCredentialsInput = () => {
+  userCredentials.email = "";
+  userCredentials.password = "";
+  userCredentials.username = "";
+  userStore.clearErrorMessage();
+};
+
+const handleOk = async () => {
+  if(props.isLogin){
+    await userStore.handleLogin({
+      email: userCredentials.email,
+      password: userCredentials.password
+    });
+  } else {
+    await userStore.handleSignup(userCredentials);
+  }
+  //await userStore.handleSignup(userCredentials); essa linha sai e entra a linha de cima
+  if(user.value){
+    open.value = false;
+    clearUserCredentialsInput();
+  }
 };
 
 const handleCancel = () => {
-  userStore.clearErrorMessage()
+  clearUserCredentialsInput();
   open.value = false;
 };
 

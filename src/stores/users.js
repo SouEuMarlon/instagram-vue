@@ -15,7 +15,45 @@ export const useUserStore = defineStore('users', () => {
       );
   };
 
-  const handleLogin = () =>{}
+  const handleLogin = async (credentials) =>{
+    const {email, password} = credentials
+
+    if(!validateEmail(email)){
+      return errorMessage.value = "Email is invalid"
+    }
+
+    if(!password.length){
+      return errorMessage.value = "Password cannot be empty"
+    }
+
+    loading.value = true
+
+    const {error} = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+    if(error){
+      loading.value = false
+      return errorMessage.value = error.message
+    }
+
+    const {data: existingUser} = await supabase
+      .from("users")
+      .select()
+      .eq('email', email)
+      .single()
+
+    user.value = {
+      id: existingUser.id,
+      email: existingUser.email,
+      username: existingUser.username
+    }
+
+    loading.value = false
+
+    errorMessage.value = ""
+  }
 
   const handleSignup = async (credentials) =>{
     const {email, password, username} = credentials
@@ -36,7 +74,8 @@ export const useUserStore = defineStore('users', () => {
 
     loading.value = true
 
-    const {data: userWithUsername} = await supabase.from("users")
+    const {data: userWithUsername} = await supabase
+      .from("users")
       .select()
       .eq('username', username)
       .single()
@@ -62,6 +101,18 @@ export const useUserStore = defineStore('users', () => {
       username,
       email
     })
+
+    const {data: newUser} = await supabase
+      .from("users")
+      .select()
+      .eq('email', email)
+      .single()
+
+    user.value = {
+      id: newUser.id,
+      email: newUser.email,
+      username: newUser.username
+    }
 
     loading.value = false
   }
